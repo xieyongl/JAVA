@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springmvc.dao.GoodsMapper">
+
+    <!-- 查询物资种类是否存在 -->
+    <select id="goods_IsExist" parameterType="string" resultType="integer">
+        SELECT COUNT(*) FROM tbl_goods WHERE goods_name=#{goods_name}
+    </select>
+
+    <!-- 通过id查询物资是否存在 -->
+    <select id="goods_isExistById" parameterType="int" resultType="integer">
+        select COUNT(*) from tbl_goods where goods_id=#{goods_id}
+    </select>
+    <!-- 增加物资种类信息 -->
+    <insert id="add_Goods" parameterType="com.springmvc.domain.Goods">
+    insert into tbl_goods (unit_id,goods_name,rest_number,goods_total,
+        goods_picturename,goods_picturepath) value (#{unit_id},#{goods_name},#{goods_total},
+        #{goods_total},#{goods_picturename},#{goods_picturepath})
+    </insert>
+
+    <!-- 删除物资种类及信息 -->
+    <update id="delete_Goods" parameterType="com.springmvc.domain.Goods">
+        delete from tbl_goods where goods_id=#{goods_id} and goods_name=#{goods_name}
+    </update>
+
+    <!-- 修改reservation_number -->
+    <update id="change_reservationnumber" parameterType="int">
+       update tbl_goods set reservation_number=#{res_number} where goods_id=#{goods_id}
+    </update>
+
+    <!-- 修改rest_number -->
+    <update id="change_restnumber" parameterType="int">
+         update tbl_goods set rest_number=#{rest_number} where goods_id=#{goods_id}
+    </update>
+
+    <!-- 通过借出，减少预约数量（从而去增加借出数量） -->
+    <update id="reduce_reservationnumber" parameterType="int">
+        update tbl_goods set reservation_number=#{reservation_num} where goods_id=#{goods_id}
+    </update>
+
+    <!-- 借出一类物资，修改其borrowed_number -->
+    <update id="change_borrowednumber" parameterType="int">
+        update tbl_goods set borrowed_number=#{borrow_number} where goods_id=#{goods_id}
+    </update>
+
+    <!-- 预约物资（修改） -->
+    <update id="reservation_goods" parameterType="int">
+        update tbl_goods set reservation_number=#{reservation_number},
+        rest_number=#{rest_number}-#{reservation_number} where goods_id=#{goods_id}
+    </update>
+
+    <!-- 借出物资（修改） -->
+    <update id="boorowed_Goods" parameterType="com.springmvc.domain.Goods">
+        update tbl_goods set borrowed_number=#{reservation_number},
+         reservation_number=#{0} where goods_id=#{goods_id}
+    </update>
+
+    <!-- 归还物资，修改归还之后的物资rest_number -->
+    <update id="return_ToRestNumber" parameterType="int">
+        update tbl_goods set rest_number=#{rest_number} where goods_id=#{goods_id}
+    </update>
+    
+    <!-- 修改借出数量borrow_number（归还之后，借出数量减少） -->
+    <update id="change_ToBorrowedNumber" parameterType="int">
+        update tbl_goods set borrowed_number=#{borrow_number} where goods_id=#{goods_id}
+    </update>
+
+
+    <!-- 查询物资种类信息 -->
+    <select id="select_goods" parameterType="string" resultType="com.springmvc.domain.Goods">
+        select * from tbl_goods where goods_name = #{goods_name}
+    </select>
+
+    <!-- 通过物资id查询物资的信息 -->
+    <select id="select_goodsById" parameterType="int" resultType="com.springmvc.domain.Goods">
+        select * from tbl_goods where goods_id=#{goods_id}
+    </select>
+    <!-- 根据单位id查询所有物资 -->
+    <select id="get_AllGoods" parameterType="int" resultType="com.springmvc.domain.Goods">
+        select * from tbl_goods where unit_id=#{unit_id}
+    </select>
+
+    <!-- 通过物资id查询物资剩余数量 -->
+    <select id="getGoodsRestNumById" parameterType="int" resultType="com.springmvc.domain.Goods">
+        select rest_number from tbl_goods where goods_id=#{goods_id}
+    </select>
+
+    <!-- 借出物资归还之后，将借用物资表的一类borrow_number置为0 -->
+    <update id="set_OneZero" parameterType="com.springmvc.domain.BorrowGoods">
+        update tbl_borrowgoods set borrow_number=#{borrow_number} where unit_id=#{unit_id} and goods_id=#{goods_id}
+    </update>
+</mapper>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springmvc.dao.BorrowGoodsMappser">
+
+    <!-- 物资申请表填写 -->
+    <insert id="apply_Goods" parameterType="com.springmvc.domain.Apply">
+        insert into tbl_apply (unit_id,target_id,borrow_time,return_time,apply_do)
+        value (#{unit_id},#{target_id},#{borrow_time},#{return_time},#{apply_do})
+    </insert>
+
+    <!-- 借用物资表借用物资 -->
+    <insert id="borrow_Goods" parameterType="com.springmvc.domain.BorrowGoods">
+        insert into tbl_borrowgoods (unit_id,goods_id,borrow_number) value (#{unit_id},
+        #{goods_id},#{borrow_number})
+    </insert>
+
+    <!-- 根据unit_id查询borrow_goods内容 -->
+    <select id="selectBorrowGoods_ByUnitId" parameterType="int" resultType="com.springmvc.domain.BorrowGoods">
+        select * from tbl_borrowgoods where unit_id=#{unit_id}
+    </select>
+
+    <!-- 根据unit_id 和 goods_id判断borrow_number是否为零 -->
+    <select id="is_Zero" parameterType="com.springmvc.domain.BorrowGoods" resultType="int">
+        select borrow_number from tbl_borrowgoods where unit_id=#{unit_id} and goods_id=#{goods_id}
+    </select>
+</mapper>
